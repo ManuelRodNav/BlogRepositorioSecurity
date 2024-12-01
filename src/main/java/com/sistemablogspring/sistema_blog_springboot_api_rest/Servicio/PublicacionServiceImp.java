@@ -30,7 +30,9 @@ public class PublicacionServiceImp implements PublicacionServicio {
     @Override
     public PublicacionDTO crearPublicacion(PublicacionDTO publicaciondto) {
         Publicacion publicacion = mapearentidad(publicaciondto);
-
+        if(publicacion.getDescripcion()==null){
+            publicacion.setDescripcion("");
+        }
         Publicacion newPublicacion = publicacionRepository.save(publicacion);
         PublicacionDTO publicacionrespuesta = mapearDTO(newPublicacion);
         return publicacionrespuesta;

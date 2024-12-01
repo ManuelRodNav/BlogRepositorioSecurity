@@ -32,8 +32,12 @@ public class JwtProvider {
             .csrf(AbstractHttpConfigurer::disable)
             .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Aplicar CORS config
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/auth/**").permitAll() // Permitir acceso libre a /auth/**
-                .anyRequest().authenticated()) // Proteger otras rutas
+                .requestMatchers("/auth/**").permitAll()
+                .requestMatchers("/api/publicacion/**").authenticated()
+                .anyRequest().authenticated() 
+            
+                ) 
+                
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless para JWT
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -44,6 +48,7 @@ public class JwtProvider {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+        CorsConfiguration allConfiguration= new CorsConfiguration();
         configuration.addAllowedOrigin("http://localhost:4200"); // Permitir solo desde localhost:4200 (tu frontend)
         configuration.addAllowedMethod("GET"); // Permitir método GET
         configuration.addAllowedMethod("POST"); // Permitir método POST
@@ -54,14 +59,24 @@ public class JwtProvider {
         configuration.addAllowedHeader("Authorization"); // Permitir encabezado Authorization para JWT
         configuration.addAllowedHeader("Content-Type"); // Permitir Content-Type
         configuration.addAllowedHeader("Accept"); // Permitir Accept
+        allConfiguration.addAllowedOrigin("http://localhost:4200");
+        allConfiguration.addAllowedOriginPattern("/api/publicacion/all");
+        allConfiguration.setAllowedMethods(List.of("GET","POST","DELETE","PUT"));
+        allConfiguration.setAllowCredentials(true);
         
         
         // Exponer encabezados necesarios para el navegador
         configuration.addExposedHeader("Access-Control-Allow-Origin");
-        configuration.addExposedHeader("Access-Control-Allow-Headers");
+        configuration.addExposedHeader("Access-Control-Allow-Headers"); 
+        allConfiguration.addExposedHeader("Access-Control-Allow-Origin");
+        allConfiguration.addExposedHeader("Access-Control-Allow-Headers"); 
+        
         
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); // Aplicar configuración de CORS a todas las rutas
+        
+        source.registerCorsConfiguration("/**", configuration);
+        source.registerCorsConfiguration("/api/publicacion/all",allConfiguration);
+        
         return source;
     }
 }

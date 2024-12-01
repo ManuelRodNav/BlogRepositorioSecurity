@@ -10,8 +10,7 @@ public class PublicacionDTO {
     @Size(min = 2,message = "el titulo de la publicacion no puede estar vacio")
     private String  titulo;
 
-    @NotEmpty
-    @Size(min = 10,message = "La descripcion debe tener al menos 10 caracteres")
+   
     private String  descripcion;
 
     @NotEmpty

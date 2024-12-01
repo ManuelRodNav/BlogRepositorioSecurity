@@ -45,7 +45,7 @@ public class PublicacionControlador {
         return new ResponseEntity<>(publicacionServiceImp.crearPublicacion(publicacionDTO), HttpStatus.OK);
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public PublicacionRespuesta listartodaslaspublicaciones(
             @RequestParam(value = "pageNumber", defaultValue = AppConstants.NUMERO_DE_PAGINA_POR_DEFECTO, required = false) int numerodePagina,
             @RequestParam(value = "pageSize", defaultValue = AppConstants.NUMERO_DE_ELEMENTOS_POR_PAGINIA, required = false) int medidadepagina,
